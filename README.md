@@ -12,6 +12,7 @@
 
 Для тестирования использовались данные датасета Sachs https://drive.google.com/file/d/13YjZVeddq91-j1LTqu9DqEzZWPCOeq98/view?usp=share_link
 
+# КОНЦЕПЦИЯ и ПЛАН ПРОЕКТА
 ## Задача минимум: 
 - Реализовать набор алгоритмов, описанных в докладе: 
 https://www.youtube.com/watch?v=aMwVHIlNnac&list=WL&index=137&t=1317s
