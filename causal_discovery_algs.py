@@ -17,7 +17,8 @@ import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_squared_error as mse
-
+import crud
+import schemas
 
 # “fisherz”: Fisher’s Z conditional independence test.
 
@@ -26,6 +27,8 @@ from sklearn.metrics import mean_squared_error as mse
 # “gsq”: G-squared conditional independence test.
 
 # “mv_fisherz”: Missing-value Fisher’s Z conditional independence test.
+
+
 
 def get_benchmark(df, n_splits):
     benchmark = {}
@@ -100,7 +103,6 @@ def estimate(mb_mapped, data, n_splits):
 
 
 def find_best_params(data, alpha, indep_test, n_splits, stable=True, uc_rule=0, uc_priority=-1):
-    benchmark, benchmark_mean = get_benchmark(data, n_splits)
     methods = {}
     alphas = {}
     launch_params = {}
@@ -131,5 +133,39 @@ def find_best_params(data, alpha, indep_test, n_splits, stable=True, uc_rule=0, 
             launch_metrics[counter] = metrics
             counter += 1
 
-    return benchmark, benchmark_mean, methods, alphas, launch_results, \
+    return methods, alphas, launch_results, \
         launch_metrics, launch_params
+def get_answer(benchmark_mean, old_launch_best_alpha=None, old_launch_best_method=None, methods_dict=None,
+               alphas_dict=None, launch_results=None, launch_params=None, old_best_launch=None, old_params=None, old_is_better=True):
+    if launch_results: #если происходил новый запуск, считаем статистики для него
+        best_result = min(launch_results, key=launch_results.get)
+        best_launch = launch_results[best_result]
+        best_params = launch_params[best_result]
+        best_alpha = old_launch_best_alpha
+        best_method = old_launch_best_method
+        try: #если были запуски до этого, выбираем лучшее значение из старого и нового
+            if best_launch < old_best_launch:
+                best_launch = old_best_launch
+                best_params = old_params
+                best_alpha = alphas_dict[best_result]
+                best_method = methods_dict[best_result]
+
+                #update_bestRun(best_launch, best_params) #если значение метрики ниже - сохраняем новое лучшее значение
+        except TypeError: #если запусков не было -> новый запуск становится лучшим
+            old_is_better = False
+    else:
+        best_launch = old_best_launch
+        best_params = old_params
+
+
+    if best_launch < benchmark_mean:
+       # cg = pc(data.to_numpy(), alpha=alphas[best_result], indep_test=methods[best_result], stable=True, uc_rule=0,
+            #    uc_priority=-1)
+        answer = f'Ура! Для ваших данных был подобран каузальный граф. Используемый метод - PC, параметры: {best_params}, среднее MSE - {best_launch}, MSE бенчмарка - {benchmark_mean}'
+        # pyd = GraphUtils.to_pydot(cg.G, labels=data.columns)
+        # pyd.write_png('graph.png')
+        # await bot.send_photo(message.from_user.id, open("graph.png", 'rb'))
+        # os.remove("graph.png")
+    else:
+        answer = f'К сожалению, для ваших данных не удалось найти подходящий причинный граф. Используемый метод - PC, параметры лучшего результата: {best_params}, MSE лучшего результата - {best_launch}, MSE бенчмарка - {benchmark_mean}'
+    return answer, best_launch, best_params,best_method, best_alpha, old_is_better
