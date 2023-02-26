@@ -147,8 +147,8 @@ def get_answer(benchmark_mean, old_launch_best_alpha=None, old_launch_best_metho
             if best_launch < old_best_launch:
                 best_launch = old_best_launch
                 best_params = old_params
-                best_alpha = alphas_dict[best_result]
-                best_method = methods_dict[best_result]
+                best_alpha = old_launch_best_alpha
+                best_method = old_launch_best_method
 
                 #update_bestRun(best_launch, best_params) #если значение метрики ниже - сохраняем новое лучшее значение
         except TypeError: #если запусков не было -> новый запуск становится лучшим
@@ -156,6 +156,8 @@ def get_answer(benchmark_mean, old_launch_best_alpha=None, old_launch_best_metho
     else:
         best_launch = old_best_launch
         best_params = old_params
+        best_alpha = old_launch_best_alpha
+        best_method = old_launch_best_method
 
 
     if best_launch < benchmark_mean:

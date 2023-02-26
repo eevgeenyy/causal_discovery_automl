@@ -41,7 +41,7 @@ def get_dataset(db:Session, url:str):
 def get_best_run(db:Session, best_runid):
     return db.query(models.Runs).filter(models.Runs.id == best_runid).first()
 
-def update_best_run(best_runid, dataset_id, db:Session):
+def update_best_run(db:Session, best_runid, dataset_id):
     dataset = db.query(models.Datasets).filter(models.Datasets.id == dataset_id).first()
     dataset.best_run = best_runid
     db.commit()

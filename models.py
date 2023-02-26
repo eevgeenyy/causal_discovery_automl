@@ -10,7 +10,9 @@ from sqlalchemy import PickleType
 
 
 def get_engine(user, passwrd, host, port, db):
-    db_string = f"postgresql://{user}:{passwrd}@{host}:{port}/{db}"
+
+    #db_string = f"postgresql://{user}:{passwrd}@{host}:{port}/{db}"
+    db_string = 'postgresql://myuser:mypassword@db/causal_db'
     if not database_exists:
         create_database(db_string)
     engine = create_engine(db_string)
@@ -52,6 +54,7 @@ class Runs(Base):
     best_alpha = Column(Integer())
     alphas = Column(MutableList.as_mutable(PickleType), default=[])
     methods = Column(MutableList.as_mutable(PickleType),default=[])
+    best_params = Column(String())
 
 
 

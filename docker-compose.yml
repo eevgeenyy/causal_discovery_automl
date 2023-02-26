@@ -1,0 +1,36 @@
+---
+version: "3.8"
+services:
+  web:
+    build: .
+    ports: 
+       - 8000:8000
+    depends_on:
+        - db
+        - rabbitmq3
+  rabbitmq3:
+        container_name: "rabbitmq"
+        image: rabbitmq:3.8-management-alpine
+        environment:
+             RABBITMQ_DEFAULT_USER: guest
+             RABBITMQ_DEFAULT_PASS: guest
+        ports:
+            # AMQP protocol port
+            - '5672:5672'
+            # HTTP management UI
+            - '15672:15672'
+  db:
+    image: postgres
+    restart: always
+    environment:
+        POSTGRES_USER: myuser
+        POSTGRES_PASSWORD: mypassword
+        POSTGRES_DB: causal_db
+    volumes:
+            - ./mounts/db_data:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
