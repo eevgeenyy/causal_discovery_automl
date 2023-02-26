@@ -14,10 +14,10 @@
 
 Для запуска через контейнер нужно создать в папке файл config.py, добавить в него токен телеграм бота и запустить команды в следующей последовательности:
 
- docker-compose build
- docker-compose up rabbitmq3 
+- docker-compose build
+- docker-compose up rabbitmq3 
 После сообщения о запуске rabbitmq3:
- docker-compose up rabbitmq3
+- docker-compose up 
 
 ## Релиз 1.1 
 
