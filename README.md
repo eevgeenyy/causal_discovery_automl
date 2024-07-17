@@ -24,7 +24,7 @@
 
 ## Релиз 1.1 
 
-Добавлена БД Postrgesql и брокер RabbbitMQ
+Добавлена БД Postrgesql и брокер RabbitMQ
 
 ## Релиз 1.0 
 
